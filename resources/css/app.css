@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    /* page */
+    .font-pattaya {
+        font-family: 'Pattaya', sans-serif;
+    }
+
+    .font-ibm {
+        font-family: 'IBM Plex Sans Thai', sans-serif;
+    }
+}

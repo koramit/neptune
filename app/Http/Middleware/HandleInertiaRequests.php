@@ -40,7 +40,21 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            //
+            'sessionLifetimeInSeconds' => fn () => config('session.lifetime') * 60000,
+            'appRoutes' => [
+                'logout' => fn () => route('logout'),
+                'checkTimeout' => url('/check-timeout'), // route('check-timeout'),
+            ],
+            'flash' => [
+                'title' => fn () => $request->session()->pull('page-title', 'MISSING'),
+                'navMenu' => fn () => $request->session()->pull('nav-menu', []),
+            ],
+            'user' => $request->user()
+                ? [
+                    // 'name' => fn () => $request->user()->name,
+                    'job_title' => fn () => $request->user()->employee?->jobTitle->name,
+                    // 'avatar' => fn () => $request->user()->socialProfiles()->where('active', true)->first()?->profile['avatar'] ?? null,
+                ] : [],
         ]);
     }
 }

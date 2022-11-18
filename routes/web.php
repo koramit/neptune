@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,259 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return \Inertia\Inertia::render('WelcomePage');
+    return \Inertia\Inertia::render('User/DashboardPage', [
+        'routes' => [
+            'formsCreate' => route('forms.create')
+        ],
+    ]);
+})->middleware(['auth'])->name('home');
+
+// Route::get('forms', function () {
+//     return \Inertia\Inertia::render('User/DashboardPage');
+// })->middleware(['auth'])->name('forms');
+
+Route::get('/landing-page', function () {
+    return \Inertia\Inertia::render('LandingPage', [
+        'formData' => [
+            'name' => 'koramit',
+            'gender' => 'male',
+            'division' => 'Nephro',
+            'is_gay' => false,
+            'comment' => 'ไปไหนมา\\nสามวา\\nสองศอก',
+        ],
+        'formConfigs' => [
+            [
+                'component' => 'FormInput',
+                'props' => [
+                    'name' => 'name',
+                ],
+            ],
+            [
+                'component' => 'FormRadio',
+                'props' => [
+                    'name' => 'gender',
+                    'options' => ['female', 'male'],
+                ],
+            ],
+            [
+                'component' => 'FormSelect',
+                'props' => [
+                    'name' => 'division',
+                    'options' => ['GI', 'ID', 'Cardio', 'Nephro']
+                ],
+            ],
+            [
+                'component' => 'FormCheckbox',
+                'props' => [
+                    'name' => 'is_gay',
+                    'label' => 'is gay',
+                ],
+            ],
+            [
+                'component' => 'FormTextarea',
+                'props' => [
+                    'name' => 'comment',
+                    'label' => 'is gay',
+                ],
+            ],
+        ]
+    ]);
+});
+
+// Auth
+Route::middleware(['guest'])->group(function () {
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login');
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        ->name('login.store');
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->name('register');
+    Route::post('register', [RegisteredUserController::class, 'store'])
+        ->name('register.store');
+//    Route::get('line-login/{provider}', [LINELoginController::class, 'create'])
+//        ->name('line-login.create');
+//    Route::get('line-login/{provider}/callback', [LINELoginController::class, 'store'])
+//        ->name('line-login.store');
+});
+Route::middleware('auth')->group(function () {
+    Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+//    Route::get('line-link/{provider}', [LINELinkController::class, 'create'])
+//        ->name('line-link.create');
+//    Route::get('line-link/{provider}/callback', [LINELinkController::class, 'store'])
+//        ->name('line-link.store');
+});
+
+Route::get('/forms/create', function (\Illuminate\Http\Request $request) {
+    return \Inertia\Inertia::render('Form/CreateForm', [
+        'routes' => [
+            'store' => route('forms.store'),
+        ]
+    ]);
+})->middleware(['auth'])->name('forms.create');
+
+Route::get('/forms/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
+    if (collect($form->config['invitees'])->doesntContain($request->user()->org_id)) {
+        abort(403);
+    }
+
+    if ($userResponse = App\Models\UserResponse::query()
+        ->where('form_id', $form->id)
+        ->where('user_id', $request->user()->id)
+        ->first()
+    ) {
+        abort(403);
+    }
+
+    return \Inertia\Inertia::render('Form/ShowForm', [
+        'title' => $form->title,
+        'questions' => $form->questions,
+        'division' => $request->user()->division,
+        'routes' => [
+            'store' => route('responses.store', $form->id),
+        ]
+    ]);
+})->middleware(['auth'])->name('forms.show');
+
+Route::patch('/forms/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
+    if ($form->user_id !== $request->user()->id) {
+        abort(403);
+    }
+
+    $data = $request->all();
+    $data['invitees'] = explode("\n", $data['invitees']);
+    foreach ($data['questions'] as &$question) {
+        $question['choices'] = explode("\n", $question['choices']);
+    }
+    $form->title = $data['title'] ?? 'ยังไม่มีชื่อ';
+    $form->config = [
+        'invitees' => $data['invitees'],
+    ];
+    $form->questions = $data['questions'];
+    $form->save();
+
+    return redirect()->route('home');
+})->middleware(['auth'])->name('forms.update');
+
+Route::get('/forms/{form}/edit', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
+    if ($form->user_id !== $request->user()->id) {
+        abort(403);
+    }
+
+    $formData['title'] = $form->title;
+    $formData['invitees'] = implode("\n", $form->config['invitees']);
+    $questions = [];
+    foreach ($form->questions as $question) {
+        $questions[] = [
+            'title' => $question['title'],
+            'choices' => implode("\n", $question['choices'])
+        ];
+    }$formData['questions'] = $questions;
+
+    return \Inertia\Inertia::render('Form/EditForm', [
+        'formData' => $formData,
+        'routes' => [
+            'update' => route('forms.update', $form->id),
+        ],
+    ]);
+})->middleware(['auth'])->name('forms.edit');
+
+Route::post('/forms', function (\Illuminate\Http\Request $request) {
+    $data = $request->all();
+    $data['invitees'] = explode("\n", $data['invitees']);
+    foreach ($data['questions'] as &$question) {
+        $question['choices'] = explode("\n", $question['choices']);
+    }
+    $form = new App\Models\Form;
+    $form->title = $data['title'] ?? 'ยังไม่มีชื่อ';
+    $form->config = [
+        'invitees' => $data['invitees'],
+    ];
+    $form->questions = $data['questions'];
+    $form->user_id = $request->user()->id;
+    $form->save();
+
+    return redirect()->route('home');
+    // return \Inertia\Inertia::render('Form/CreateForm');
+})->middleware(['auth'])->name('forms.store');
+
+Route::post('/responses/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
+    if (collect($form->config['invitees'])->doesntContain($request->user()->org_id)) {
+        abort(403);
+    }
+
+    if ($userResponse = App\Models\UserResponse::query()
+            ->where('form_id', $form->id)
+            ->where('user_id', $request->user()->id)
+            ->first()
+    ) {
+        abort(403);
+    }
+
+    $response = new App\Models\Response;
+    $response->form_id = $form->id;
+    $answers = [];
+    $answers['หน่วยงาน'] = $request->input('division');
+    foreach ($form->questions as $q) {
+        $answers[$q['title']] = $request->input($q['title']);
+    }
+    $response->answers = $answers;
+    $response->save();
+
+    $userResponse = new \App\Models\UserResponse();
+    $userResponse->user_id = $request->user()->id;
+    $userResponse->form_id = $form->id;
+    $userResponse->save();
+
+    return redirect()->route('home');
+})->middleware(['auth'])->name('responses.store');
+
+Route::get('/export/participants/{form}', function (App\Models\Form $form) {
+   $data = [];
+   $users = \App\Models\UserResponse::query()
+       ->where('form_id', $form->id)
+       ->get();
+
+   $participants = [];
+   foreach ($users as $user) {
+       $userData = \App\Models\User::query()->find($user->user_id);
+       $row['id'] = $userData->org_id;
+       $row['ชื่อ'] = $userData->name;
+       $row['หน่วยงาน'] = $userData->division;
+       $row['ตอบแล้ว'] = 'YES';
+       $data[] = $row;
+       $participants[] = $userData->org_id;
+   }
+
+   foreach ($form->config['invitees'] as $sapId) {
+       if (in_array($sapId, $participants)) {
+           continue;
+       }
+
+       $data[] = [
+           'id' => $sapId,
+           'ชื่อ' => null,
+           'หน่วยงาน' => null,
+           'ตอบแล้ว' => 'NO',
+       ];
+   }
+
+    return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download('รายชื่อผู้ตอบแบบสอบถาม.xlsx');
+});
+
+Route::get('/export/responses/{form}', function (App\Models\Form $form) {
+    $data = [];
+    $responses = \App\Models\Response::query()
+        ->where('form_id', $form->id)
+        ->get();
+
+    foreach ($responses as $response) {
+        $row = [];
+        foreach ($response->answers as $key => $value) {
+            $row[$key] = $value;
+        }
+        $data[] = $row;
+    }
+
+    return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download('คำตอบแบบสอบถาม.xlsx');
 });
