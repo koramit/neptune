@@ -23,6 +23,21 @@ Route::get('/', function () {
     ]);
 })->middleware(['auth'])->name('home');
 
+
+Route::get('/f/{form}/uninvited', function (\App\Models\Form $form) {
+    return \Inertia\Inertia::render('UnauthorizedPage', [
+        'title' => $form->title,
+        'message' => 'ท่านไม่ได้รับเชิญเข้าร่วมแบบสอบถามนี้',
+    ]);
+})->name('forms.uninvited');
+
+Route::get('/f/{form}/anonymous-no-edit-allowed', function (\App\Models\Form $form) {
+    return \Inertia\Inertia::render('UnauthorizedPage', [
+        'title' => $form->title,
+        'message' => 'ท่านไม่สามารถแก้ไขแบบสอบถามนี้ได้เนื่องจากเป็นแบบสอบถามแบบไม่ระบุตัวตน',
+    ]);
+})->name('forms.anonymous-no-edit-allowed');
+
 // Route::get('forms', function () {
 //     return \Inertia\Inertia::render('User/DashboardPage');
 // })->middleware(['auth'])->name('forms');
@@ -107,9 +122,9 @@ Route::get('/forms/create', function (\Illuminate\Http\Request $request) {
     ]);
 })->middleware(['auth'])->name('forms.create');
 
-Route::get('/forms/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
+Route::get('/f/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
     if (collect($form->config['invitees'])->doesntContain($request->user()->org_id)) {
-        abort(403);
+        return redirect()->route('forms.uninvited', $form);
     }
 
     if ($userResponse = App\Models\UserResponse::query()
@@ -117,7 +132,7 @@ Route::get('/forms/{form}', function (App\Models\Form $form, \Illuminate\Http\Re
         ->where('user_id', $request->user()->id)
         ->first()
     ) {
-        abort(403);
+        return redirect()->route('forms.anonymous-no-edit-allowed', $form);
     }
 
     return \Inertia\Inertia::render('Form/ShowForm', [

@@ -21,7 +21,7 @@ createInertiaApp({
     resolve: name => {
         return resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue'))
             .then(page => {
-                let pageLayoutPages = ['LandingPage', 'Auth/LoginForm', 'Auth/RegisterForm'];
+                let pageLayoutPages = ['LandingPage', 'Auth/LoginForm', 'Auth/RegisterForm', 'UnauthorizedPage'];
                 page.default.layout =  pageLayoutPages.includes(name) ? PageLayout : AppLayout;
 
                 return page;

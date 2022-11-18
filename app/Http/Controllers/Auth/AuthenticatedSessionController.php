@@ -21,6 +21,7 @@ class AuthenticatedSessionController extends Controller
         return Inertia::render('Auth/LoginForm', [
             'routes' => [
                 'login' => route('login.store'),
+                'reset_password' => config('app.USER_RESET_PASSWORD_URL'),
                 // 'lineLogin' => $lineProvider
                 //     ? route('line-login.create', $lineProvider->hashed_key)
                 //     : null,
