@@ -18,7 +18,7 @@ return new class extends Migration
             $table->tinyText('title')->default('ยังไม่มีชื่อ');
             $table->jsonb('config');
             $table->jsonb('questions');
-            $table->foreignId('user_id');
+            $table->foreignId('creator_id')->constrained('users');
             $table->timestamps();
         });
     }

@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 sm:p-0">
+    <div class="">
         <div
             class="mt-6 sm:mt-10 lg:mt-14 space-x-4"
             v-for="(question, key) in questions"

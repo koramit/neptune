@@ -52,7 +52,7 @@ class AuthenticatedSessionController extends Controller
             $auth->login = $user['login'];
             $auth->name = $user['full_name'];
             $auth->org_id = $user['org_id'];
-            $auth->division= $user['office_name'];
+            $auth->division = $user['office_name'];
             $auth->password = Hash::make(Str::random());
             $auth->save();
         }

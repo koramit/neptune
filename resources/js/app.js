@@ -12,7 +12,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 
 InertiaProgress.init({
     delay: 200,
-    color: '#4B5563',
+    color: '#0284C7',
     showSpinner: true
 });
 

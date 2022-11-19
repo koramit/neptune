@@ -15,23 +15,43 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (Illuminate\Http\Request $request) {
+    $forms = App\Models\Form::query()
+        ->where('creator_id', $request->user()->id)
+        ->get()
+        ->transform(fn ($f) => [
+            'title' => $f->title,
+            'hashedKey' => $f->hashed_key,
+            'routes' => [
+                'edit' => route('forms.edit', $f->hashed_key),
+                'show' => route('forms.show', $f->hashed_key),
+                'duplicate' => route('forms.duplicate', $f->hashed_key),
+                'participants_export' => route('participants.export', $f->hashed_key),
+                'responses_export' => route('responses.export', $f->hashed_key),
+            ],
+        ]);
+
+    session()->flash('page-title', 'ฟอร์ม');
+
     return \Inertia\Inertia::render('User/DashboardPage', [
         'routes' => [
-            'formsCreate' => route('forms.create')
+            'forms_create' => route('forms.create'),
         ],
+        'can' => [
+            'create_form' => $request->user()->id === 1,
+        ],
+        'forms' => $forms,
     ]);
 })->middleware(['auth'])->name('home');
 
-
-Route::get('/f/{form}/uninvited', function (\App\Models\Form $form) {
+Route::get('/f/{form}/uninvited', function (App\Models\Form $form) {
     return \Inertia\Inertia::render('UnauthorizedPage', [
         'title' => $form->title,
         'message' => 'ท่านไม่ได้รับเชิญเข้าร่วมแบบสอบถามนี้',
     ]);
 })->name('forms.uninvited');
 
-Route::get('/f/{form}/anonymous-no-edit-allowed', function (\App\Models\Form $form) {
+Route::get('/f/{form}/anonymous-no-edit-allowed', function (App\Models\Form $form) {
     return \Inertia\Inertia::render('UnauthorizedPage', [
         'title' => $form->title,
         'message' => 'ท่านไม่สามารถแก้ไขแบบสอบถามนี้ได้เนื่องจากเป็นแบบสอบถามแบบไม่ระบุตัวตน',
@@ -69,7 +89,7 @@ Route::get('/landing-page', function () {
                 'component' => 'FormSelect',
                 'props' => [
                     'name' => 'division',
-                    'options' => ['GI', 'ID', 'Cardio', 'Nephro']
+                    'options' => ['GI', 'ID', 'Cardio', 'Nephro'],
                 ],
             ],
             [
@@ -86,7 +106,7 @@ Route::get('/landing-page', function () {
                     'label' => 'is gay',
                 ],
             ],
-        ]
+        ],
     ]);
 });
 
@@ -114,17 +134,22 @@ Route::middleware('auth')->group(function () {
 //        ->name('line-link.store');
 });
 
-Route::get('/forms/create', function (\Illuminate\Http\Request $request) {
+Route::get('/forms/create', function (Illuminate\Http\Request $request) {
+    // if user id !== 1 then abort 403
+    if ($request->user()->id !== 1) {
+        abort(403);
+    }
+
     return \Inertia\Inertia::render('Form/CreateForm', [
         'routes' => [
             'store' => route('forms.store'),
-        ]
+        ],
     ]);
 })->middleware(['auth'])->name('forms.create');
 
-Route::get('/f/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
+Route::get('/f/{form}', function (App\Models\Form $form, Illuminate\Http\Request $request) {
     if (collect($form->config['invitees'])->doesntContain($request->user()->org_id)) {
-        return redirect()->route('forms.uninvited', $form);
+        return redirect()->route('forms.uninvited', $form->hashed_key);
     }
 
     if ($userResponse = App\Models\UserResponse::query()
@@ -132,7 +157,7 @@ Route::get('/f/{form}', function (App\Models\Form $form, \Illuminate\Http\Reques
         ->where('user_id', $request->user()->id)
         ->first()
     ) {
-        return redirect()->route('forms.anonymous-no-edit-allowed', $form);
+        return redirect()->route('forms.anonymous-no-edit-allowed', $form->hashed_key);
     }
     $request->session()->flash('page-title', $form->title);
 
@@ -140,13 +165,13 @@ Route::get('/f/{form}', function (App\Models\Form $form, \Illuminate\Http\Reques
         'questions' => $form->questions,
         'division' => $request->user()->division,
         'routes' => [
-            'store' => route('responses.store', $form->id),
-        ]
+            'store' => route('responses.store', $form->hashed_key),
+        ],
     ]);
 })->middleware(['auth'])->name('forms.show');
 
-Route::patch('/forms/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
-    if ($form->user_id !== $request->user()->id) {
+Route::patch('/forms/{form}', function (App\Models\Form $form, Illuminate\Http\Request $request) {
+    if ($form->creator_id !== $request->user()->id) {
         abort(403);
     }
 
@@ -165,8 +190,8 @@ Route::patch('/forms/{form}', function (App\Models\Form $form, \Illuminate\Http\
     return redirect()->route('home');
 })->middleware(['auth'])->name('forms.update');
 
-Route::get('/forms/{form}/edit', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
-    if ($form->user_id !== $request->user()->id) {
+Route::get('/forms/{form}/edit', function (App\Models\Form $form, Illuminate\Http\Request $request) {
+    if ($form->creator_id !== $request->user()->id) {
         abort(403);
     }
 
@@ -176,19 +201,19 @@ Route::get('/forms/{form}/edit', function (App\Models\Form $form, \Illuminate\Ht
     foreach ($form->questions as $question) {
         $questions[] = [
             'title' => $question['title'],
-            'choices' => implode("\n", $question['choices'])
+            'choices' => implode("\n", $question['choices']),
         ];
     }$formData['questions'] = $questions;
 
     return \Inertia\Inertia::render('Form/EditForm', [
         'formData' => $formData,
         'routes' => [
-            'update' => route('forms.update', $form->id),
+            'update' => route('forms.update', $form->hashed_key),
         ],
     ]);
 })->middleware(['auth'])->name('forms.edit');
 
-Route::post('/forms', function (\Illuminate\Http\Request $request) {
+Route::post('/forms', function (Illuminate\Http\Request $request) {
     $data = $request->all();
     $data['invitees'] = explode("\n", $data['invitees']);
     foreach ($data['questions'] as &$question) {
@@ -200,14 +225,25 @@ Route::post('/forms', function (\Illuminate\Http\Request $request) {
         'invitees' => $data['invitees'],
     ];
     $form->questions = $data['questions'];
-    $form->user_id = $request->user()->id;
+    $form->creator_id = $request->user()->id;
     $form->save();
 
     return redirect()->route('home');
     // return \Inertia\Inertia::render('Form/CreateForm');
 })->middleware(['auth'])->name('forms.store');
 
-Route::post('/responses/{form}', function (App\Models\Form $form, \Illuminate\Http\Request $request) {
+Route::post('/forms/{form}/duplicate', function (Illuminate\Http\Request $request, App\Models\Form $form) {
+    if ($form->creator_id !== $request->user()->id) {
+        abort(403);
+    }
+
+    $newForm = $form->replicate();
+    $newForm->save();
+
+    return redirect()->route('forms.edit', $newForm->hashed_key);
+})->middleware(['auth'])->name('forms.duplicate');
+
+Route::post('/responses/{form}', function (App\Models\Form $form, Illuminate\Http\Request $request) {
     if (collect($form->config['invitees'])->doesntContain($request->user()->org_id)) {
         abort(403);
     }
@@ -224,10 +260,13 @@ Route::post('/responses/{form}', function (App\Models\Form $form, \Illuminate\Ht
     $response->form_id = $form->id;
     $answers = [];
     $answers['หน่วยงาน'] = $request->input('division');
+
+    $data = $request->all();
     foreach ($form->questions as $q) {
-        $answers[$q['title']] = $request->input($q['title']);
+        $answers[$q['title']] = $data[$q['title']];
     }
     $response->answers = $answers;
+
     $response->save();
 
     $userResponse = new \App\Models\UserResponse();
@@ -238,40 +277,48 @@ Route::post('/responses/{form}', function (App\Models\Form $form, \Illuminate\Ht
     return redirect()->route('home');
 })->middleware(['auth'])->name('responses.store');
 
-Route::get('/export/participants/{form}', function (App\Models\Form $form) {
-   $data = [];
-   $users = \App\Models\UserResponse::query()
-       ->where('form_id', $form->id)
-       ->get();
+Route::get('/participants/{form}/export', function (App\Models\Form $form, Illuminate\Http\Request $request) {
+    if ($form->creator_id !== $request->user()->id) {
+        abort(403);
+    }
 
-   $participants = [];
-   foreach ($users as $user) {
-       $userData = \App\Models\User::query()->find($user->user_id);
-       $row['id'] = $userData->org_id;
-       $row['ชื่อ'] = $userData->name;
-       $row['หน่วยงาน'] = $userData->division;
-       $row['ตอบแล้ว'] = 'YES';
-       $data[] = $row;
-       $participants[] = $userData->org_id;
-   }
+    $data = [];
+    $users = \App\Models\UserResponse::query()
+        ->where('form_id', $form->id)
+        ->get();
 
-   foreach ($form->config['invitees'] as $sapId) {
-       if (in_array($sapId, $participants)) {
-           continue;
-       }
+    $participants = [];
+    foreach ($users as $user) {
+        $userData = \App\Models\User::query()->find($user->user_id);
+        $row['id'] = $userData->org_id;
+        $row['ชื่อ'] = $userData->name;
+        $row['หน่วยงาน'] = $userData->division;
+        $row['ตอบแล้ว'] = 'YES';
+        $data[] = $row;
+        $participants[] = $userData->org_id;
+    }
 
-       $data[] = [
-           'id' => $sapId,
-           'ชื่อ' => null,
-           'หน่วยงาน' => null,
-           'ตอบแล้ว' => 'NO',
-       ];
-   }
+    foreach ($form->config['invitees'] as $sapId) {
+        if (in_array($sapId, $participants)) {
+            continue;
+        }
 
-    return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download('รายชื่อผู้ตอบแบบสอบถาม.xlsx');
-});
+        $data[] = [
+            'id' => $sapId,
+            'ชื่อ' => null,
+            'หน่วยงาน' => null,
+            'ตอบแล้ว' => 'NO',
+        ];
+    }
 
-Route::get('/export/responses/{form}', function (App\Models\Form $form) {
+    return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download('ผู้ตอบแบบสอบถาม.xlsx');
+})->middleware(['auth'])->name('participants.export');
+
+Route::get('/responses/{form}/export', function (App\Models\Form $form, Illuminate\Http\Request $request) {
+    if ($form->creator_id !== $request->user()->id) {
+        abort(403);
+    }
+
     $data = [];
     $responses = \App\Models\Response::query()
         ->where('form_id', $form->id)
@@ -286,4 +333,4 @@ Route::get('/export/responses/{form}', function (App\Models\Form $form) {
     }
 
     return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download('คำตอบแบบสอบถาม.xlsx');
-});
+})->middleware(['auth'])->name('responses.export');
