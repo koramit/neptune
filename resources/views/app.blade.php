@@ -6,7 +6,7 @@
 
     <title inertia>Neptune</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai&family=Pattaya&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&family=Pattaya&display=swap" rel="stylesheet">
 
     @vite('resources/js/app.js')
     @inertiaHead

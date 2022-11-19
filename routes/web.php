@@ -134,9 +134,9 @@ Route::get('/f/{form}', function (App\Models\Form $form, \Illuminate\Http\Reques
     ) {
         return redirect()->route('forms.anonymous-no-edit-allowed', $form);
     }
+    $request->session()->flash('page-title', $form->title);
 
     return \Inertia\Inertia::render('Form/ShowForm', [
-        'title' => $form->title,
         'questions' => $form->questions,
         'division' => $request->user()->division,
         'routes' => [

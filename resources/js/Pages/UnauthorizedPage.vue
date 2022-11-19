@@ -7,6 +7,12 @@
             <h2 class="text-center text-xl italic tracking-tight">
                 {{ message }}
             </h2>
+            <div class="text-sm text-center">
+                <a
+                    href="/"
+                    class="font-medium text-sky-600 hover:text-sky-500"
+                >หน้าหลัก</a>
+            </div>
         </div>
     </div>
 </template>
