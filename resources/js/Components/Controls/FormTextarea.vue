@@ -8,8 +8,6 @@
 </template>
 
 <script setup>
-import {defineEmits, defineProps} from 'vue';
-
 defineEmits(['update:modelValue']);
 defineProps({
     modelValue: {type: [String, null], required: true},

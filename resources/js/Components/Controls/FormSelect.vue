@@ -38,7 +38,6 @@
 </template>
 
 <script setup>
-
 defineProps({
     name: {type: String, required: true},
     label: {type:[String, null], default: null},

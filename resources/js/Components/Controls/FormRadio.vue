@@ -18,8 +18,6 @@
 </template>
 
 <script setup>
-import {defineEmits,defineProps} from 'vue';
-
 defineProps({
     name: {type: String, required: true},
     options: {type: Array, required: true},

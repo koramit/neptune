@@ -10,8 +10,6 @@
 </template>
 
 <script setup>
-import {defineProps} from 'vue';
-
 defineProps({
     type: {type: String, default: 'text'},
     modelValue: {type: [String,Number,null], required: true}
