@@ -1,0 +1,105 @@
+{
+  "resources/js/app.js": {
+    "file": "assets/app.5a3cf92c.js",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/Pages/AllForms.vue",
+      "resources/js/Pages/Auth/LoginForm.vue",
+      "resources/js/Pages/Auth/RegisterForm.vue",
+      "resources/js/Pages/Form/CreateForm.vue",
+      "resources/js/Pages/Form/EditForm.vue",
+      "resources/js/Pages/Form/ShowForm.vue",
+      "resources/js/Pages/LandingPage.vue",
+      "resources/js/Pages/UnauthorizedPage.vue",
+      "resources/js/Pages/User/DashboardPage.vue"
+    ],
+    "css": [
+      "assets/app.31095e18.css"
+    ]
+  },
+  "resources/js/Pages/AllForms.vue": {
+    "file": "assets/AllForms.23e0f18e.js",
+    "src": "resources/js/Pages/AllForms.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Auth/LoginForm.vue": {
+    "file": "assets/LoginForm.7c9876c3.js",
+    "src": "resources/js/Pages/Auth/LoginForm.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Auth/RegisterForm.vue": {
+    "file": "assets/RegisterForm.186dd41e.js",
+    "src": "resources/js/Pages/Auth/RegisterForm.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Form/CreateForm.vue": {
+    "file": "assets/CreateForm.6109ceae.js",
+    "src": "resources/js/Pages/Form/CreateForm.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Form/EditForm.vue": {
+    "file": "assets/EditForm.954309da.js",
+    "src": "resources/js/Pages/Form/EditForm.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/Form/ShowForm.vue": {
+    "file": "assets/ShowForm.c4a12297.js",
+    "src": "resources/js/Pages/Form/ShowForm.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_FormCheckbox.ff9c18a4.js"
+    ]
+  },
+  "_FormCheckbox.ff9c18a4.js": {
+    "file": "assets/FormCheckbox.ff9c18a4.js",
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/LandingPage.vue": {
+    "file": "assets/LandingPage.f17fe87d.js",
+    "src": "resources/js/Pages/LandingPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js",
+      "_FormCheckbox.ff9c18a4.js"
+    ]
+  },
+  "resources/js/Pages/UnauthorizedPage.vue": {
+    "file": "assets/UnauthorizedPage.eedc5692.js",
+    "src": "resources/js/Pages/UnauthorizedPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/Pages/User/DashboardPage.vue": {
+    "file": "assets/DashboardPage.61b13283.js",
+    "src": "resources/js/Pages/User/DashboardPage.vue",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
+  "resources/js/app.css": {
+    "file": "assets/app.31095e18.css",
+    "src": "resources/js/app.css"
+  }
+}
