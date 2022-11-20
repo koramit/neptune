@@ -311,7 +311,9 @@ Route::get('/participants/{form}/export', function (App\Models\Form $form, Illum
         ];
     }
 
-    return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download('ผู้ตอบแบบสอบถาม.xlsx');
+    $shuffledData = collect($data)->shuffle()->toArray();
+
+    return (new \Rap2hpoutre\FastExcel\FastExcel($shuffledData))->download('ผู้ตอบแบบสอบถาม.xlsx');
 })->middleware(['auth'])->name('participants.export');
 
 Route::get('/responses/{form}/export', function (App\Models\Form $form, Illuminate\Http\Request $request) {
@@ -332,5 +334,21 @@ Route::get('/responses/{form}/export', function (App\Models\Form $form, Illumina
         $data[] = $row;
     }
 
-    return (new \Rap2hpoutre\FastExcel\FastExcel($data))->download('คำตอบแบบสอบถาม.xlsx');
+    $shuffledData = collect($data)->shuffle()->toArray();
+
+    return (new \Rap2hpoutre\FastExcel\FastExcel($shuffledData))->download('คำตอบแบบสอบถาม.xlsx');
 })->middleware(['auth'])->name('responses.export');
+
+Route::get('/คนดี-รอบ-1', function () {
+    session()->flash('page-title', 'คนดีฯ รอบ 1');
+    $forms = App\Models\Form::query()
+        ->get()
+        ->transform(fn ($f) => [
+            'title' => $f->title,
+            'url' => route('forms.show', $f->hashed_key),
+        ]);
+
+    return Inertia\Inertia::render('AllForms', [
+        'forms' => $forms,
+    ]);
+});
