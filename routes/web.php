@@ -54,7 +54,7 @@ Route::get('/f/{form}/uninvited', function (App\Models\Form $form) {
 Route::get('/f/{form}/anonymous-no-edit-allowed', function (App\Models\Form $form) {
     return \Inertia\Inertia::render('UnauthorizedPage', [
         'title' => $form->title,
-        'message' => 'ท่านไม่สามารถแก้ไขแบบสอบถามนี้ได้เนื่องจากเป็นแบบสอบถามแบบไม่ระบุตัวตน',
+        'message' => 'ท่านไม่สามารถทำซ้ำหรือแก้ไขแบบสอบถามนี้ได้เนื่องจากเป็นแบบสอบถามแบบไม่ระบุตัวตนและท่านได้ตอบแล้ว',
     ]);
 })->name('forms.anonymous-no-edit-allowed');
 
@@ -274,8 +274,12 @@ Route::post('/responses/{form}', function (App\Models\Form $form, Illuminate\Htt
     $userResponse->form_id = $form->id;
     $userResponse->save();
 
-    return redirect()->route('home');
+    return redirect()->route('responses.thanks', $form->hashed_key);
 })->middleware(['auth'])->name('responses.store');
+
+Route::get('/responses/{form}/thanks', function (\App\Models\Form $form) {
+    return \Inertia\Inertia::render('ResponseSubmitted', ['title' => $form->title]);
+})->middleware(['auth'])->name('responses.thanks');
 
 Route::get('/participants/{form}/export', function (App\Models\Form $form, Illuminate\Http\Request $request) {
     if ($form->creator_id !== $request->user()->id) {
@@ -342,7 +346,6 @@ Route::get('/responses/{form}/export', function (App\Models\Form $form, Illumina
 Route::get('/คนดี-รอบ-1', function () {
     session()->flash('page-title', 'คนดีฯ รอบ 1');
     $forms = App\Models\Form::query()
-        ->whereNotIn('id', [1,20,21,22])
         ->get()
         ->transform(fn ($f) => [
             'title' => $f->title,

@@ -37,7 +37,6 @@
 </template>
 
 <script setup>
-import {defineEmits,defineProps} from 'vue';
 defineEmits(['update:modelValue']);
 defineProps({
     modelValue: {type: Boolean, default: false},
