@@ -6,7 +6,13 @@
             class="py-8 border-t-2 first:border-t-0 border-sky-600 border-dashed"
         >
             <div class="space-y-3">
-                <p>{{ form.title }}</p>
+                <p>
+                    {{ form.title }}
+                    <span
+                        class="ml-3 italic"
+                        v-if="form.responses"
+                    >ตอบแล้ว <span class="font-medium">{{ form.responses }}</span> ท่าน</span>
+                </p>
                 <p class="text-sky-600">
                     <a
                         target="_blank"

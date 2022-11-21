@@ -5,6 +5,12 @@
     >
         สร้างฟอร์ม
     </InertiaLink>
+    <InertiaLink
+        href="/คนดี-รอบ-1"
+        class="text-sky-600"
+    >
+        โหวตเสนอชื่อโครงการคนดีฯ ประจำปี 2565 รอบที่ 1
+    </InertiaLink>
     <div
         class="mt-8 space-y-4"
     >

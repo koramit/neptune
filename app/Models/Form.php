@@ -15,4 +15,10 @@ class Form extends Model
         'config' => AsArrayObject::class,
         'questions' => AsArrayObject::class,
     ];
+
+    // form has many responses
+    public function responses()
+    {
+        return $this->hasMany(Response::class);
+    }
 }

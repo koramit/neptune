@@ -9,7 +9,7 @@ class AuthUserAPI
 {
     public function authenticate(string $login, string $password): array
     {
-        return $this->makePost(config('app.AUTH_USER_URL'), ['login' => $login, 'password' => $password], 2);
+        return $this->makePost(config('app.AUTH_USER_URL'), ['login' => $login, 'password' => $password], 4);
     }
 
     protected function makePost(string $route, array $form, int $timeout)
@@ -24,7 +24,7 @@ class AuthUserAPI
         } catch (\Exception $e) {
             Log::error($route.'|'.$e->getMessage());
 
-            return ['ok' => false, 'status' => 503, 'error' => 'server', 'message' => 'ระบบไม่สามารถให้ยริการได้ กรุณาลองใหม่ในอีกสักครู่'];
+            return ['ok' => false, 'status' => 503, 'error' => 'server', 'message' => 'ระบบไม่สามารถให้บริการได้ กรุณาลองใหม่ในอีกสักครู่'];
         }
 
         if ($response->successful()) {
