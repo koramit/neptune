@@ -346,11 +346,13 @@ Route::get('/responses/{form}/export', function (App\Models\Form $form, Illumina
 Route::get('/คนดี-รอบ-1', function () {
     session()->flash('page-title', 'คนดีฯ รอบ 1');
     $forms = App\Models\Form::query()
+        ->withCount('responses')
         ->whereBetween('id', [2, 19])
         ->get()
         ->transform(fn ($f) => [
             'title' => $f->title,
             'url' => route('forms.show', $f->hashed_key),
+            'responses' => $f->responses_count,
         ]);
 
     return Inertia\Inertia::render('AllForms', [
