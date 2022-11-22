@@ -347,7 +347,8 @@ Route::get('/คนดี-รอบ-1', function () {
     session()->flash('page-title', 'คนดีฯ รอบ 1');
     $forms = App\Models\Form::query()
         ->withCount('responses')
-        ->whereBetween('id', [2, 19])
+        // ->whereBetween('id', [2, 19])
+        ->whereNotIn('id', [1, 5, 7, 12, 19, 20, 21, 22, 23])
         ->get()
         ->transform(fn ($f) => [
             'title' => $f->title,
