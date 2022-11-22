@@ -348,7 +348,7 @@ Route::get('/คนดี-รอบ-1', function () {
     $forms = App\Models\Form::query()
         ->withCount('responses')
         // ->whereBetween('id', [2, 19])
-        ->whereNotIn('id', [1, 5, 7, 12, 19, 20, 21, 22, 23])
+        ->whereNotIn('id', [1, 5, 7, 12, 16, 19, 20, 21, 22, 23])
         ->get()
         ->transform(fn ($f) => [
             'title' => $f->title,
