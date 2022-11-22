@@ -41,7 +41,7 @@ class AuthenticatedSessionController extends Controller
             return back()->withErrors(['login' => $user['message'] ?? $user['body']]);
         }
 
-        if (! $auth = User::query()->where('login', $validated['login'])->first()) {
+        if (! $auth = User::query()->where('org_id', $user['org_id'])->first()) {
             /*session()->put('employee-register', $employee);
             session()->put('login-register', $validated['login']);
 
