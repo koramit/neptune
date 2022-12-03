@@ -1,6 +1,7 @@
 <template>
     <div>
         <FormInput
+            name="title"
             label="ชื่อฟอร์ม"
             class="border p-2"
             v-model="form.title"
@@ -12,22 +13,15 @@
             mode="array"
         />
 
-        <div
-            v-for="(question, index) in form.questions"
-            :key="index"
-            class="m-4 p-4 border rounded space-x-2"
-        >
-            <FormSelectCreator
-                v-model:title="question.title"
-                v-model:choices="question.choices"
-                v-if="question.type === 'FormSelect'"
-            />
-            <FormRadioGroupCardCreator
-                v-model:title="question.title"
-                v-model:choices="question.choices"
-                v-if="question.type === 'FormRadioGroupCard'"
-            />
-        </div>
+        <component
+            v-for="(question, key) in form.questions"
+            :key="key"
+            :is="resolveCreatorComponent(`${question.type}Creator`)"
+            v-model:title="question.title"
+            v-model:choices="question.choices"
+            v-model:foo="question.foo"
+        />
+
         <FormRadio
             name="type"
             v-model="questionType"
@@ -49,10 +43,9 @@
 
 <script setup>
 import {useForm} from '@inertiajs/inertia-vue3';
+import {useResolveCreatorComponent} from '../../functions/useResolveCreatorComponent.js';
 import FormRadio from '../../Components/Controls/FormRadio.vue';
-import FormRadioGroupCardCreator from '../../Components/Controls/FormRadioGroupCardCreator.vue';
 import FormTextarea from '../../Components/Controls/FormTextarea.vue';
-import FormSelectCreator from '../../Components/Controls/FormSelectCreator.vue';
 import FormInput from '../../Components/Controls/FormInput.vue';
 import {ref} from 'vue';
 
@@ -61,7 +54,7 @@ const props = defineProps({
     formData: {type: Object, required: true},
 });
 
-const form = useForm({...props.formData});
+const form = useForm(JSON.parse(JSON.stringify(props.formData)));
 
 const newQuestion = () => {
     form.questions.push({
@@ -76,6 +69,8 @@ const questionTypes = [
     'FormSelect',
     'FormRadioGroupCard',
 ];
+
+const {resolveCreatorComponent} = useResolveCreatorComponent();
 </script>
 
 <style scoped>

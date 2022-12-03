@@ -60,6 +60,7 @@ import {ref, watch} from 'vue';
 
 const emits = defineEmits(['update:modelValue']);
 const props = defineProps({
+    name: {type: String, required: true},
     label: {type: [String, null], default: null},
     options: {type: Array, required: true},
     modelValue: {type: [String, null], required: true},

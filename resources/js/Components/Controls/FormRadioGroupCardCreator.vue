@@ -1,15 +1,11 @@
 <template>
-    <div>
+    <div class="border-b border-slate-300 pb-4">
         <FormInput
+            :name="`${title}-title`"
             label="คำถาม"
             v-model="question.title"
         />
-        <button
-            class="mt-4"
-            @click="addChoice"
-        >
-            เพิ่มตัวเลือก
-        </button>
+
         <div>
             <div
                 class="m-4 p-4 border rounded space-y-2"
@@ -17,23 +13,34 @@
                 :key="key"
             >
                 <FormInput
+                    :name="`${title}-choice-${key}-title`"
                     label="title"
                     v-model="choice.title"
                 />
                 <FormInput
+                    :name="`${title}-choice-${key}-description`"
                     label="description"
                     v-model="choice.description"
                 />
                 <FormInput
+                    :name="`${title}-choice-${key}-image`"
                     label="image"
                     v-model="choice.image"
                 />
                 <FormInput
+                    :name="`${title}-choice-${key}-value`"
                     label="value"
                     v-model="choice.value"
                 />
             </div>
         </div>
+
+        <button
+            class="mt-4"
+            @click="addChoice"
+        >
+            เพิ่มตัวเลือก
+        </button>
     </div>
 </template>
 

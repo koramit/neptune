@@ -5,7 +5,7 @@ import FormCheckbox from '../Components/Controls/FormCheckbox.vue';
 import FormTextarea from '../Components/Controls/FormTextarea.vue';
 import FormRadioGroupCard from '../Components/Controls/FormRadioGroupCard.vue';
 
-export function useResolveComponent() {
+export function useResolveControlComponent() {
     const resolveControlComponent = (name) => {
         if (name === 'FormInput') {
             return FormInput;
