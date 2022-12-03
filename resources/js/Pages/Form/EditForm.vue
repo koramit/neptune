@@ -10,7 +10,7 @@
         </div>
         <div class="m-4 p-4 border rounded space-x-2">
             <label>ผู้เข้าร่วม</label>
-            <textarea
+            <FormTextarea
                 class="border p-2"
                 v-model="form.invitees"
             />
@@ -31,7 +31,7 @@
             </div>
             <div class="m-4 p-4 border rounded space-x-2">
                 <label>ตัวเลือก</label>
-                <textarea
+                <FormTextarea
                     class="border p-2"
                     v-model="question.choices"
                 />
@@ -53,6 +53,7 @@
 
 <script setup>
 import {useForm} from '@inertiajs/inertia-vue3';
+import FormTextarea from '../../Components/Controls/FormTextarea.vue';
 
 const props = defineProps({
     routes: {type: Object, required: true},

@@ -50,9 +50,10 @@ class AuthenticatedSessionController extends Controller
             // auto register for now
             $auth = new User();
             $auth->login = $user['login'];
-            $auth->name = $user['full_name'];
+            $auth->name = $user['login'];
+            $auth->full_name = $user['full_name'];
             $auth->org_id = $user['org_id'];
-            $auth->division = $user['office_name'];
+            $auth->division_id = 1; // @TODO: get from init file
             $auth->password = Hash::make(Str::random());
             $auth->save();
         }

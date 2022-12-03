@@ -36,6 +36,8 @@
         >
             add
         </button>
+        <hr>
+        <FormRadioGroupCard />
     </div>
 </template>
 
@@ -46,6 +48,7 @@ import FormInput from '../Components/Controls/FormInput.vue';
 import FormSelect from '../Components/Controls/FormSelect.vue';
 import FormCheckbox from '../Components/Controls/FormCheckbox.vue';
 import FormTextarea from '../Components/Controls/FormTextarea.vue';
+import FormRadioGroupCard from '../Components/Controls/FormRadioGroupCard.vue';
 
 const props = defineProps({
     formData: {type: Object, required: true},

@@ -196,14 +196,21 @@ Route::get('/forms/{form}/edit', function (App\Models\Form $form, Illuminate\Htt
     }
 
     $formData['title'] = $form->title;
-    $formData['invitees'] = implode("\n", $form->config['invitees']);
-    $questions = [];
+    $formData['invitees'] = $form->config['invitees']; // implode("\n", $form->config['invitees']);
+    $formData['questions'] = $form->questions;
+    // $formData['invitees'] = implode("\n", $form->config['invitees']);
+    /*$questions = [];
     foreach ($form->questions as $question) {
         $questions[] = [
             'title' => $question['title'],
             'choices' => implode("\n", $question['choices']),
+            // 'choices' => $question['type'] === 'FormSelect'
+            //     ? implode("\n", $question['choices'])
+            //     : $question['choices'],
         ];
-    }$formData['questions'] = $questions;
+    }
+
+    $formData['questions'] = $questions;*/
 
     return \Inertia\Inertia::render('Form/EditForm', [
         'formData' => $formData,
@@ -217,7 +224,9 @@ Route::post('/forms', function (Illuminate\Http\Request $request) {
     $data = $request->all();
     $data['invitees'] = explode("\n", $data['invitees']);
     foreach ($data['questions'] as &$question) {
-        $question['choices'] = explode("\n", $question['choices']);
+        if ($question['type'] === 'FormSelect') {
+            $question['choices'] = explode("\n", $question['choices']);
+        }
     }
     $form = new App\Models\Form;
     $form->title = $data['title'] ?? 'ยังไม่มีชื่อ';
@@ -309,7 +318,7 @@ Route::get('/participants/{form}/export', function (App\Models\Form $form, Illum
 
         $data[] = [
             'id' => $sapId,
-            'ชื่อ' => null,
+            // 'ชื่อ' => null,
             'หน่วยงาน' => null,
             'ตอบแล้ว' => 'NO',
         ];
