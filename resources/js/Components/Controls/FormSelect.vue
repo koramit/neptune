@@ -4,7 +4,7 @@
             <label
                 v-if="label"
                 :for="name"
-                class="block text-sm font-medium"
+                class="block text-base font-medium"
             >{{ label }}</label>
             <span class="text-sm text-slate-500">จำเป็น</span>
         </div>

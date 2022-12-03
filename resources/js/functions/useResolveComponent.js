@@ -3,6 +3,7 @@ import FormRadio from '../Components/Controls/FormRadio.vue';
 import FormSelect from '../Components/Controls/FormSelect.vue';
 import FormCheckbox from '../Components/Controls/FormCheckbox.vue';
 import FormTextarea from '../Components/Controls/FormTextarea.vue';
+import FormRadioGroupCard from '../Components/Controls/FormRadioGroupCard.vue';
 
 export function useResolveComponent() {
     const resolveControlComponent = (name) => {
@@ -16,6 +17,8 @@ export function useResolveComponent() {
             return FormCheckbox;
         } else if (name === 'FormTextarea') {
             return FormTextarea;
+        } else if (name === 'FormRadioGroupCard') {
+            return FormRadioGroupCard;
         }
     };
 

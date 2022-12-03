@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\AttachDivisionUserAction;
 use App\APIs\AuthUserAPI;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use OpenSpout\Common\Exception\IOException;
+use OpenSpout\Common\Exception\UnsupportedTypeException;
+use OpenSpout\Reader\Exception\ReaderNotOpenedException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -29,6 +33,11 @@ class AuthenticatedSessionController extends Controller
         ]);
     }
 
+    /**
+     * @throws IOException
+     * @throws UnsupportedTypeException
+     * @throws ReaderNotOpenedException
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -50,11 +59,13 @@ class AuthenticatedSessionController extends Controller
             // auto register for now
             $auth = new User();
             $auth->login = $user['login'];
-            $auth->name = $user['full_name'];
+            $auth->name = $user['login'];
+            $auth->full_name = $user['full_name'];
             $auth->org_id = $user['org_id'];
-            $auth->division = $user['office_name'];
             $auth->password = Hash::make(Str::random());
             $auth->save();
+
+            (new AttachDivisionUserAction())($auth);
         }
 
         Auth::login($auth);

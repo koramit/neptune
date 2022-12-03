@@ -1,42 +1,38 @@
 <template>
     <div>
-        <div class="m-4 p-4 border rounded space-x-2">
-            <label>ชื่อฟอร์ม</label>
-            <input
-                class="border p-2"
-                type="text"
-                v-model="form.title"
-            >
-        </div>
-        <div class="m-4 p-4 border rounded space-x-2">
-            <label>ผู้เข้าร่วม</label>
-            <textarea
-                class="border p-2"
-                v-model="form.invitees"
-            />
-        </div>
-
+        <FormInput
+            label="ชื่อฟอร์ม"
+            class="border p-2"
+            v-model="form.title"
+        />
+        <FormTextarea
+            label="ผู้เข้าร่วม"
+            class="border p-2"
+            v-model="form.invitees"
+            mode="array"
+        />
         <div
             v-for="(question, index) in form.questions"
             :key="index"
-            class="m-4 p-4 border rounded space-x-2"
+            class="m-4 p-4 border rounded space-y-2"
         >
-            <div class="m-4 p-4 border rounded space-x-2">
-                <label>คำถาม</label>
-                <input
-                    class="border p-2"
-                    type="text"
-                    v-model="question.title"
-                >
-            </div>
-            <div class="m-4 p-4 border rounded space-x-2">
-                <label>ตัวเลือก</label>
-                <textarea
-                    class="border p-2"
-                    v-model="question.choices"
-                />
-            </div>
+            <FormSelectCreator
+                v-model:title="question.title"
+                v-model:choices="question.choices"
+                v-if="question.type === 'FormSelect'"
+            />
+
+            <FormRadioGroupCardCreator
+                v-model:title="question.title"
+                v-model:choices="question.choices"
+                v-if="question.type === 'FormRadioGroupCard'"
+            />
         </div>
+        <FormRadio
+            name="type"
+            v-model="questionType"
+            :options="questionTypes"
+        />
         <button @click="newQuestion">
             เพิ่มคำถาม
         </button>
@@ -52,7 +48,13 @@
 </template>
 
 <script setup>
+import {ref} from 'vue';
 import {useForm} from '@inertiajs/inertia-vue3';
+import FormRadio from '../../Components/Controls/FormRadio.vue';
+import FormRadioGroupCardCreator from '../../Components/Controls/FormRadioGroupCardCreator.vue';
+import FormTextarea from '../../Components/Controls/FormTextarea.vue';
+import FormSelectCreator from '../../Components/Controls/FormSelectCreator.vue';
+import FormInput from '../../Components/Controls/FormInput.vue';
 
 defineProps({
     routes: {type: Object, required: true},
@@ -67,9 +69,16 @@ const form = useForm({
 const newQuestion = () => {
     form.questions.push({
         title: null,
-        choices: null,
+        type: questionType.value,
+        choices:  [], // questionType.value === 'FormRadioGroupCard' ? [] : null,
     });
 };
+
+const questionType = ref(null);
+const questionTypes = [
+    'FormSelect',
+    'FormRadioGroupCard',
+];
 </script>
 
 <style scoped>

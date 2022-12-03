@@ -19,6 +19,7 @@
             <FormInput v-model="field.label" />
             <label>component</label>
             <FormSelect
+                name="component"
                 v-model="field.component"
                 :options="['FormInput','FormSelect','FormRadio','FormTextarea']"
             />
@@ -36,6 +37,18 @@
         >
             add
         </button>
+        <hr>
+        <FormRadioGroupCard
+            label="โปรดเลือกคนดี"
+            :options="[
+                { title: 'ไม่ขอเสนอชื่อผู้ใด', description: null, image: null, value: 'ไม่ขอเสนอชื่อผู้ใด|หน่วย' },
+                { title: 'นางสาวเขมจิรา การเกตกลาง', description: 'นักวิชาการสถิติ', image: 'https://med-cm-website.s3.ap-southeast-1.amazonaws.com/public/images/person/22/VNRtZGS6ADpFLII500RztEE0mYrkxbZAbi5agRTI.jpg', value: 'นางสาวเขมจิรา การเกตกลาง|วิจัย' },
+                { title: 'นางสาวนิษฐกานต์ นภนที', description: 'เจ้าหน้าที่บริหารงานทั่วไป', image: 'https://med-cm-website.s3.ap-southeast-1.amazonaws.com/public/images/person/22/Als0qsFwncVMCrXTY6MGppgntYeS4nFpxdzz5r8L.jpg', value: 'นางสาวนิษฐกานต์ นภนที|วิจัย' },
+                { title: 'นางสาววชิรินทรา ปาลกะวงศ์ ณ อยุธยา', description: 'เจ้าหน้าที่วิจัย', image: 'https://med-cm-website.s3.ap-southeast-1.amazonaws.com/public/images/person/22/kn1i2aVezLlKVUJpv9R4PTVKwycRkYabI6tAER1W.jpg', value: 'นางสาววชิรินทรา ปาลกะวงศ์ ณ อยุธยา|วิจัย' },
+                { title: 'นางสาวปวีณา วามะลุน', description: 'พยาบาล', image: 'https://med-cm-website.s3.ap-southeast-1.amazonaws.com/public/images/person/22/UKg1apmjBzlxL2X3pkO1NDE0Em1TyviCo9wWecs8.jpg', value: 'นางสาวปวีณา วามะลุน|วิจัย' },
+            ]"
+            v-model="kondee"
+        />
     </div>
 </template>
 
@@ -46,11 +59,14 @@ import FormInput from '../Components/Controls/FormInput.vue';
 import FormSelect from '../Components/Controls/FormSelect.vue';
 import FormCheckbox from '../Components/Controls/FormCheckbox.vue';
 import FormTextarea from '../Components/Controls/FormTextarea.vue';
+import FormRadioGroupCard from '../Components/Controls/FormRadioGroupCard.vue';
 
 const props = defineProps({
     formData: {type: Object, required: true},
     formConfigs: {type: Array, required: true},
 });
+
+const kondee = ref('ไม่ขอเสนอชื่อผู้ใด|หน่วย');
 
 const form = reactive({...props.formData});
 const {resolveControlComponent} = useResolveComponent();

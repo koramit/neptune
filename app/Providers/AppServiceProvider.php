@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use Hashids\Hashids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Sanctum::ignoreMigrations();
+
         $this->app->singleton(Hashids::class, fn () => new Hashids(salt: config('app.key')));
     }
 
@@ -24,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Model::unguard();
+
+        Model::preventAccessingMissingAttributes(! $this->app->isProduction());
+
+        Model::preventLazyLoading(! $this->app->isProduction());
     }
 }
