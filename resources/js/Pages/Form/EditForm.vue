@@ -1,6 +1,7 @@
 <template>
     <div>
         <FormInput
+            name="title"
             label="ชื่อฟอร์ม"
             class="border p-2"
             v-model="form.title"

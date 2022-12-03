@@ -1,6 +1,7 @@
 <template>
     <div>
         <FormInput
+            :name="`${title}-title`"
             label="คำถาม"
             v-model="question.title"
         />
@@ -17,18 +18,22 @@
                 :key="key"
             >
                 <FormInput
+                    :name="`${title}-choice-${key}-title`"
                     label="title"
                     v-model="choice.title"
                 />
                 <FormInput
+                    :name="`${title}-choice-${key}-description`"
                     label="description"
                     v-model="choice.description"
                 />
                 <FormInput
+                    :name="`${title}-choice-${key}-image`"
                     label="image"
                     v-model="choice.image"
                 />
                 <FormInput
+                    :name="`${title}-choice-${key}-value`"
                     label="value"
                     v-model="choice.value"
                 />
