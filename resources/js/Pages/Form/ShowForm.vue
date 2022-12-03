@@ -8,6 +8,7 @@
             v-bind="question.props"
         />
         <FormInput
+            name="division"
             v-model="form.division"
             label="หน่วยงานของผู้ตอบ"
             :auto-fill="true"
