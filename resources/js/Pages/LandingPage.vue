@@ -54,7 +54,7 @@
 
 <script setup>
 import {reactive, ref} from 'vue';
-import {useResolveComponent} from '../functions/useResolveComponent.js';
+import {useResolveControlComponent} from '../functions/useResolveControlComponent.js';
 import FormInput from '../Components/Controls/FormInput.vue';
 import FormSelect from '../Components/Controls/FormSelect.vue';
 import FormCheckbox from '../Components/Controls/FormCheckbox.vue';
@@ -69,7 +69,7 @@ const props = defineProps({
 const kondee = ref('ไม่ขอเสนอชื่อผู้ใด|หน่วย');
 
 const form = reactive({...props.formData});
-const {resolveControlComponent} = useResolveComponent();
+const {resolveControlComponent} = useResolveControlComponent();
 
 const field = reactive({
     name: null,

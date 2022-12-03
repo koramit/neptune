@@ -176,6 +176,11 @@ Route::patch('/forms/{form}', function (App\Models\Form $form, Illuminate\Http\R
         abort(403);
     }
 
+    // $request->validate([
+    //     'apple' => 'required',
+    //     'banana' => 'required',
+    // ]);
+
     $data = $request->all();
     $form->title = $data['title'] ?? 'untitled';
     $form->config = [

@@ -1,16 +1,11 @@
 <template>
-    <div>
+    <div class="border-b border-slate-300 pb-4">
         <FormInput
             :name="`${title}-title`"
             label="คำถาม"
             v-model="question.title"
         />
-        <button
-            class="mt-4"
-            @click="addChoice"
-        >
-            เพิ่มตัวเลือก
-        </button>
+
         <div>
             <div
                 class="m-4 p-4 border rounded space-y-2"
@@ -39,6 +34,13 @@
                 />
             </div>
         </div>
+
+        <button
+            class="mt-4"
+            @click="addChoice"
+        >
+            เพิ่มตัวเลือก
+        </button>
     </div>
 </template>
 

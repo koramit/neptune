@@ -1,5 +1,5 @@
 <template>
-    <div class="space-y-6">
+    <div class="space-y-6 md:space-y-10 xl:space-y-12">
         <component
             v-for="(question, key) in questions"
             :key="key"
@@ -34,7 +34,7 @@
 import {useForm} from '@inertiajs/inertia-vue3';
 import FormCheckbox from '../../Components/Controls/FormCheckbox.vue';
 import {computed} from 'vue';
-import {useResolveComponent} from '../../functions/useResolveComponent.js';
+import {useResolveControlComponent} from '../../functions/useResolveControlComponent.js';
 import FormInput from '../../Components/Controls/FormInput.vue';
 
 const props = defineProps({
@@ -63,7 +63,7 @@ const invalidForm = computed(() => {
     return invalid;
 });
 
-const {resolveControlComponent} = useResolveComponent();
+const {resolveControlComponent} = useResolveControlComponent();
 </script>
 
 <style scoped>
