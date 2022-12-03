@@ -16,8 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
-
         Sanctum::ignoreMigrations();
 
         $this->app->singleton(Hashids::class, fn () => new Hashids(salt: config('app.key')));
@@ -32,9 +30,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::unguard();
 
-        Model::preventAccessingMissingAttributes(!$this->app->isProduction());
+        Model::preventAccessingMissingAttributes(! $this->app->isProduction());
 
-        Model::preventLazyLoading(!$this->app->isProduction());
-
+        Model::preventLazyLoading(! $this->app->isProduction());
     }
 }

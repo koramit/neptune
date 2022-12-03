@@ -162,8 +162,9 @@ Route::get('/f/{form}', function (App\Models\Form $form, Illuminate\Http\Request
     $request->session()->flash('page-title', $form->title);
 
     return \Inertia\Inertia::render('Form/ShowForm', [
-        'questions' => $form->questions,
-        'division' => $request->user()->division,
+        'questions' => $form->transformed_questions,
+        'transformed_questions' => $form->transformed_questions,
+        'division' => $request->user()->division->name,
         'routes' => [
             'store' => route('responses.store', $form->hashed_key),
         ],
@@ -176,7 +177,14 @@ Route::patch('/forms/{form}', function (App\Models\Form $form, Illuminate\Http\R
     }
 
     $data = $request->all();
-    $data['invitees'] = explode("\n", $data['invitees']);
+    $form->title = $data['title'] ?? 'untitled';
+    $form->config = [
+        'invitees' => $data['invitees'],
+    ];
+    $form->questions = $data['questions'];
+    // $form->creator_id = $request->user()->id;
+    $form->save();
+    /*$data['invitees'] = explode("\n", $data['invitees']);
     foreach ($data['questions'] as &$question) {
         $question['choices'] = explode("\n", $question['choices']);
     }
@@ -185,7 +193,7 @@ Route::patch('/forms/{form}', function (App\Models\Form $form, Illuminate\Http\R
         'invitees' => $data['invitees'],
     ];
     $form->questions = $data['questions'];
-    $form->save();
+    $form->save();*/
 
     return redirect()->route('home');
 })->middleware(['auth'])->name('forms.update');
@@ -222,14 +230,8 @@ Route::get('/forms/{form}/edit', function (App\Models\Form $form, Illuminate\Htt
 
 Route::post('/forms', function (Illuminate\Http\Request $request) {
     $data = $request->all();
-    $data['invitees'] = explode("\n", $data['invitees']);
-    foreach ($data['questions'] as &$question) {
-        if ($question['type'] === 'FormSelect') {
-            $question['choices'] = explode("\n", $question['choices']);
-        }
-    }
     $form = new App\Models\Form;
-    $form->title = $data['title'] ?? 'ยังไม่มีชื่อ';
+    $form->title = $data['title'] ?? 'untitled';
     $form->config = [
         'invitees' => $data['invitees'],
     ];
@@ -265,7 +267,7 @@ Route::post('/responses/{form}', function (App\Models\Form $form, Illuminate\Htt
         abort(403);
     }
 
-    $response = new App\Models\Response;
+    $response = new App\Models\FormResponse;
     $response->form_id = $form->id;
     $answers = [];
     $answers['หน่วยงาน'] = $request->input('division');
@@ -286,7 +288,7 @@ Route::post('/responses/{form}', function (App\Models\Form $form, Illuminate\Htt
     return redirect()->route('responses.thanks', $form->hashed_key);
 })->middleware(['auth'])->name('responses.store');
 
-Route::get('/responses/{form}/thanks', function (\App\Models\Form $form) {
+Route::get('/responses/{form}/thanks', function (App\Models\Form $form) {
     return \Inertia\Inertia::render('ResponseSubmitted', ['title' => $form->title]);
 })->middleware(['auth'])->name('responses.thanks');
 
@@ -335,7 +337,7 @@ Route::get('/responses/{form}/export', function (App\Models\Form $form, Illumina
     }
 
     $data = [];
-    $responses = \App\Models\Response::query()
+    $responses = \App\Models\FormResponse::query()
         ->where('form_id', $form->id)
         ->get();
 

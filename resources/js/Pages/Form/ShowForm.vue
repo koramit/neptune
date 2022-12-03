@@ -1,20 +1,17 @@
 <template>
-    <div class="">
-        <div
-            class="mt-6 sm:mt-10 lg:mt-14 space-x-4"
+    <div class="space-y-6">
+        <component
             v-for="(question, key) in questions"
             :key="key"
-        >
-            <FormSelect
-                :label="question.title"
-                :name="question.title"
-                v-model="form[question.title]"
-                :options="question.choices"
-            />
-        </div>
-        <!--        <div>
-            <label>หน่วยงานของผู้ตอบแบบสอบถาม : {{ division }}</label>
-        </div>-->
+            :is="resolveControlComponent(question.type)"
+            v-model="form[question.title]"
+            v-bind="question.props"
+        />
+        <FormInput
+            v-model="form.division"
+            label="หน่วยงานของผู้ตอบ"
+            :auto-fill="true"
+        />
         <FormCheckbox
             class="mt-8"
             label="ฉันรับทราบว่าฟอร์มนี้เป็นแบบไม่เปิดเผยตัวตนผู้ตอบ เมื่อทำการส่งคำตอบแล้วจะไม่สามารถแก้ไขหรือทำใหม่ได้อีก"
@@ -34,9 +31,10 @@
 <script setup>
 
 import {useForm} from '@inertiajs/inertia-vue3';
-import FormSelect from '../../Components/Controls/FormSelect.vue';
 import FormCheckbox from '../../Components/Controls/FormCheckbox.vue';
 import {computed} from 'vue';
+import {useResolveComponent} from '../../functions/useResolveComponent.js';
+import FormInput from '../../Components/Controls/FormInput.vue';
 
 const props = defineProps({
     questions: {type: Array, required:true},
@@ -63,6 +61,8 @@ const invalidForm = computed(() => {
 
     return invalid;
 });
+
+const {resolveControlComponent} = useResolveComponent();
 </script>
 
 <style scoped>

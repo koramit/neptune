@@ -157,6 +157,7 @@
                     </h1>
                 </div>
             </header>
+            <hr class="my-6 border-t border-slate-400 border-dashed">
             <main>
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <!-- Replace with your content -->

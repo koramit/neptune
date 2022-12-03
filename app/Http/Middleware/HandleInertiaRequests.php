@@ -51,8 +51,8 @@ class HandleInertiaRequests extends Middleware
             ],
             'user' => $request->user()
                 ? [
-                    // 'name' => fn () => $request->user()->name,
-                    'job_title' => fn () => $request->user()->employee?->jobTitle->name,
+                    'name' => fn () => $request->user()->name,
+                    // 'job_title' => fn () => $request->user()->employee?->jobTitle->name,
                     // 'avatar' => fn () => $request->user()->socialProfiles()->where('active', true)->first()?->profile['avatar'] ?? null,
                 ] : [],
         ]);
