@@ -38,6 +38,10 @@
         >
             บันทึก
         </button>
+
+        <QRCode
+            data="https://google.com"
+        />
     </div>
 </template>
 
@@ -48,6 +52,7 @@ import FormRadio from '../../Components/Controls/FormRadio.vue';
 import FormTextarea from '../../Components/Controls/FormTextarea.vue';
 import FormInput from '../../Components/Controls/FormInput.vue';
 import {ref} from 'vue';
+import QRCode from '../../Components/Helpers/QRCode.vue';
 
 const props = defineProps({
     routes: {type: Object, required: true},
@@ -72,7 +77,3 @@ const questionTypes = [
 
 const {resolveCreatorComponent} = useResolveCreatorComponent();
 </script>
-
-<style scoped>
-
-</style>
