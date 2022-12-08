@@ -21,7 +21,7 @@
                 class="mt-8 space-y-6"
                 action="#"
                 method="POST"
-                @submit.prevent="form.post(routes.login)"
+                @submit.prevent="form.post(routes.login, {onError: () => form.processing = false})"
             >
                 <input
                     type="hidden"
@@ -90,6 +90,7 @@
                     <button
                         type="submit"
                         class="group relative flex w-full justify-center rounded-md border border-transparent bg-sky-600 py-2 px-4 text-sm font-medium text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-colors duration-200"
+                        :disabled="form.processing"
                     >
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <LockIcon
