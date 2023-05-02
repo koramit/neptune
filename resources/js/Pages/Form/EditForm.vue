@@ -40,7 +40,7 @@
         </button>
 
         <QRCode
-            data="https://google.com"
+            :data="routes.show ?? 'https://google.com'"
         />
     </div>
 </template>
