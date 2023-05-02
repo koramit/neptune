@@ -4,6 +4,7 @@
             label="ชื่อฟอร์ม"
             class="border p-2"
             v-model="form.title"
+            name="title"
         />
         <FormTextarea
             label="ผู้เข้าร่วม"
@@ -26,6 +27,12 @@
                 v-model:title="question.title"
                 v-model:choices="question.choices"
                 v-if="question.type === 'FormRadioGroupCard'"
+            />
+
+            <FormAutocompleteCreator
+                v-model:title="question.title"
+                v-model:choices="question.choices"
+                v-if="question.type === 'FormAutocomplete'"
             />
         </div>
         <FormRadio
@@ -54,6 +61,7 @@ import FormRadio from '../../Components/Controls/FormRadio.vue';
 import FormRadioGroupCardCreator from '../../Components/Controls/FormRadioGroupCardCreator.vue';
 import FormTextarea from '../../Components/Controls/FormTextarea.vue';
 import FormSelectCreator from '../../Components/Controls/FormSelectCreator.vue';
+import FormAutocompleteCreator from '../../Components/Controls/FormAutocompleteCreator.vue';
 import FormInput from '../../Components/Controls/FormInput.vue';
 
 defineProps({
@@ -78,6 +86,7 @@ const questionType = ref(null);
 const questionTypes = [
     'FormSelect',
     'FormRadioGroupCard',
+    'FormAutocomplete',
 ];
 </script>
 

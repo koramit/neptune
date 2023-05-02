@@ -7,12 +7,12 @@
             v-model="form[question.title]"
             v-bind="question.props"
         />
-        <FormInput
+<!--        <FormInput
             name="division"
             v-model="form.division"
             label="หน่วยงานของผู้ตอบ"
             :auto-fill="true"
-        />
+        />-->
         <FormCheckbox
             class="mt-8"
             label="ฉันรับทราบว่าฟอร์มนี้เป็นแบบไม่เปิดเผยตัวตนผู้ตอบ เมื่อทำการส่งคำตอบแล้วจะไม่สามารถแก้ไขหรือทำใหม่ได้อีก"
@@ -35,7 +35,7 @@ import {useForm} from '@inertiajs/inertia-vue3';
 import FormCheckbox from '../../Components/Controls/FormCheckbox.vue';
 import {computed} from 'vue';
 import {useResolveControlComponent} from '../../functions/useResolveControlComponent.js';
-import FormInput from '../../Components/Controls/FormInput.vue';
+// import FormInput from '../../Components/Controls/FormInput.vue';
 
 const props = defineProps({
     questions: {type: Array, required:true},
@@ -55,12 +55,21 @@ const invalidForm = computed(() => {
     qq.push('division');
     qq.push('confirmed');
 
+    // required all fields
     let invalid = false;
     for(let key in qq) {
         invalid = invalid || !form[qq[key]];
     }
 
-    return invalid;
+    if (invalid) {
+        return invalid;
+    }
+
+    // check unique
+    let ans = props.questions.map(q => form[q.title]);
+    let unique = [...new Set(ans)];
+
+    return unique.length !== ans.length;
 });
 
 const {resolveControlComponent} = useResolveControlComponent();

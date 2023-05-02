@@ -73,6 +73,7 @@ const questionType = ref(null);
 const questionTypes = [
     'FormSelect',
     'FormRadioGroupCard',
+    'FormAutocomplete',
 ];
 
 const {resolveCreatorComponent} = useResolveCreatorComponent();

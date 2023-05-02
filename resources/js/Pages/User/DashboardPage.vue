@@ -5,12 +5,12 @@
     >
         สร้างฟอร์ม
     </InertiaLink>
-    <InertiaLink
+<!--    <InertiaLink
         href="/f/dJ"
         class="text-sky-600"
     >
         โหวตเสนอชื่อโครงการคนดีฯ ประจำปี 2565 รอบตัดสิน
-    </InertiaLink>
+    </InertiaLink>-->
     <div
         class="mt-8 space-y-4"
     >
