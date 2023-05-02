@@ -36,7 +36,7 @@ class Form extends Model
             get: function () {
                 return $this->questions->map(function ($q) {
                     $props = match ($q['type']) {
-                        'FormSelect', 'FormRadioGroupCard' => [
+                        'FormSelect', 'FormRadioGroupCard', 'FormAutocomplete' => [
                             'name' => $q['title'],
                             'label' => $q['title'],
                             'options' => $q['choices'],
