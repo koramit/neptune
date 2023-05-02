@@ -229,6 +229,7 @@ Route::get('/forms/{form}/edit', function (App\Models\Form $form, Illuminate\Htt
         'formData' => $formData,
         'routes' => [
             'update' => route('forms.update', $form->hashed_key),
+            'show' => route('forms.show', $form->hashed_key),
         ],
     ]);
 })->middleware(['auth'])->name('forms.edit');
