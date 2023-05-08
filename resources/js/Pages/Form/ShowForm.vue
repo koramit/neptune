@@ -19,13 +19,19 @@
             v-model="form.confirmed"
             name="confirmed"
         />
-        <button
-            class="mt-4 group relative flex w-full justify-center rounded-md border border-transparent bg-sky-600 disabled:bg-sky-600/40 py-2 px-4 text-sm font-medium text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-colors duration-200"
-            :disabled="invalidForm"
-            @click="form.post(routes.store)"
-        >
-            ส่งคำตอบ
-        </button>
+        <div>
+            <button
+                class="mt-4 group relative flex w-full justify-center rounded-md border border-transparent bg-sky-600 disabled:bg-sky-600/40 py-2 px-4 text-sm font-medium text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-colors duration-200"
+                :disabled="invalidForm"
+                @click="form.post(routes.store)"
+            >
+                ส่งคำตอบ
+            </button>
+            <small
+                v-if="invalidForm"
+                class="mt-4 block italic text-sx"
+            >* หากเลือกคำตอบซ้ำจะไม่สามารถส่งคำตอบได้</small>
+        </div>
     </div>
 </template>
 

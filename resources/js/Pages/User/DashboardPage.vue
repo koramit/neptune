@@ -5,12 +5,12 @@
     >
         สร้างฟอร์ม
     </InertiaLink>
-<!--    <InertiaLink
-        href="/f/dJ"
+    <InertiaLink
+        :href="routes.fix_form"
         class="text-sky-600"
     >
-        โหวตเสนอชื่อโครงการคนดีฯ ประจำปี 2565 รอบตัดสิน
-    </InertiaLink>-->
+        เสนอชื่อบุคลากรสายสนับสนุนเพื่อเป็นตัวแทนของกลุ่มบุคลากรสายสนับสนุนวาระ ปี 2566
+    </InertiaLink>
     <div
         class="mt-8 space-y-4"
     >
