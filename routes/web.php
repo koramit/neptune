@@ -36,6 +36,7 @@ Route::get('/', function (Illuminate\Http\Request $request) {
     return \Inertia\Inertia::render('User/DashboardPage', [
         'routes' => [
             'forms_create' => route('forms.create'),
+            'fix_form' => route('forms.show', env('FIX_FORM_HASHED_KEY', 'ab')),
         ],
         'can' => [
             'create_form' => $request->user()->id === 1,
