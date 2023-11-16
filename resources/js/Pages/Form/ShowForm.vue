@@ -27,10 +27,10 @@
             >
                 ส่งคำตอบ
             </button>
-            <small
+<!--            <small
                 v-if="invalidForm"
                 class="mt-4 block italic text-sx"
-            >* หากเลือกคำตอบซ้ำจะไม่สามารถส่งคำตอบได้</small>
+            >* หากเลือกคำตอบซ้ำจะไม่สามารถส่งคำตอบได้</small>-->
         </div>
     </div>
 </template>

@@ -149,7 +149,7 @@ Route::get('/forms/create', function (Illuminate\Http\Request $request) {
 })->middleware(['auth'])->name('forms.create');
 
 Route::get('/f/{form}', function (App\Models\Form $form, Illuminate\Http\Request $request) {
-    if (collect($form->config['invitees'])->doesntContain($request->user()->org_id)) {
+    if (collect($form->config['invitees'])->doesntContain($request->user()->org_id) && $request->user()->id !== $form->creator_id) {
         return redirect()->route('forms.uninvited', $form->hashed_key);
     }
 

@@ -13,14 +13,17 @@
             mode="array"
         />
 
-        <component
-            v-for="(question, key) in form.questions"
-            :key="key"
-            :is="resolveCreatorComponent(`${question.type}Creator`)"
-            v-model:title="question.title"
-            v-model:choices="question.choices"
-            v-model:foo="question.foo"
-        />
+        <div class="my-8 space-y-4">
+            <component
+                v-for="(question, key) in form.questions"
+                :key="key"
+                :is="resolveCreatorComponent(`${question.type}Creator`)"
+                v-model:title="question.title"
+                v-model:choices="question.choices"
+                v-model:foo="question.foo"
+                @delete="form.questions.splice(key, 1)"
+            />
+        </div>
 
         <FormRadio
             name="type"

@@ -11,6 +11,10 @@
             v-model="question.choices"
             mode="array"
         />
+        <button
+            class="text-red-500 underline"
+            @click="$emit('delete')"
+        >ลบ</button>
     </div>
 </template>
 
@@ -25,7 +29,7 @@ const props = defineProps({
     choices: {type: Array, required: true},
 });
 
-const emits = defineEmits(['update:title', 'update:choices']);
+const emits = defineEmits(['update:title', 'update:choices', 'delete']);
 
 const question = reactive({
     title: props.title,
