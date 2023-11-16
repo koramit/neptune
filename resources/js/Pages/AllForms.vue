@@ -34,6 +34,7 @@ import QRCode from 'qrcode';
 
 const props = defineProps({
     forms: {type: Array, required: true},
+    invitations: {type: Array, required: true},
 });
 
 props.forms.forEach((form) => {

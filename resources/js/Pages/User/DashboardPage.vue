@@ -1,16 +1,16 @@
 <template>
-    <InertiaLink
+    <Link
         :href="routes.forms_create"
         v-if="can.create_form"
     >
         สร้างฟอร์ม
-    </InertiaLink>
-    <InertiaLink
+    </Link>
+<!--    <Link
         :href="routes.fix_form"
         class="text-sky-600"
     >
         เสนอชื่อบุคลากรสายสนับสนุนเพื่อเป็นตัวแทนของกลุ่มบุคลากรสายสนับสนุนวาระ ปี 2566
-    </InertiaLink>
+    </Link>-->
     <div
         class="mt-8 space-y-4"
     >
@@ -20,26 +20,26 @@
             class="space-x-3"
         >
             <span>{{ form.title }}</span>
-            <InertiaLink
+            <Link
                 :href="form.routes.edit"
                 class="text-sky-600"
             >
                 แก้ไข
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
                 :href="form.routes.show"
                 class="text-sky-600"
             >
                 แสดง
-            </InertiaLink>
-            <InertiaLink
+            </Link>
+            <Link
                 :href="form.routes.duplicate"
                 as="button"
                 method="post"
                 class="text-sky-600"
             >
                 ทำซ้ำ
-            </InertiaLink>
+            </Link>
             <a
                 class="text-sky-600 cursor-pointer"
                 :href="form.routes.responses_export"
@@ -50,15 +50,30 @@
             >Excel-ผู้ตอบ</a>
         </div>
     </div>
+    <div class="mt-8 space-y-4">
+        <div
+            v-for="form in invitations"
+            :key="form.hashed_key"
+            class="space-x-3"
+        >
+            <Link
+                :href="form.routes.show"
+                class="text-sky-600"
+            >
+                <span>{{ form.title }}</span>
+            </Link>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import {InertiaLink} from '@inertiajs/inertia-vue3';
+import {Link} from '@inertiajs/inertia-vue3';
 
 defineProps({
     routes: {type: Object, required: true},
     can: {type: Object, required: true},
     forms: {type: Array, required: true},
+    invitations: {type: Array, required: true},
 });
 </script>
 
