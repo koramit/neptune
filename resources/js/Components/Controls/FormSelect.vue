@@ -38,13 +38,18 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
     name: {type: String, required: true},
     label: {type:[String, null], default: null},
     options: {type: Array, required: true},
     modelValue: {type: [String, Number, null], required: true},
 });
-defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue']);
+
+// if options has only one element, set it as default
+if(props.options.length === 1) {
+    emits('update:modelValue', props.options[0]);
+}
 </script>
 
 <style scoped>

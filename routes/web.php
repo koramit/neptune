@@ -33,6 +33,18 @@ Route::get('/', function (Illuminate\Http\Request $request) {
 
     session()->flash('page-title', 'ฟอร์ม');
 
+    $invitations = App\Models\Form::query()
+        ->select(['id', 'title', 'config'])
+        ->get()
+        ->filter(fn ($f) => collect($f->config['invitees'])->contains($request->user()->org_id))
+        ->transform(fn ($f) => [
+            'title' => $f->title,
+            'hashedKey' => $f->hashed_key,
+            'routes' => [
+                'show' => route('forms.show', $f->hashed_key),
+            ],
+        ]);
+
     return \Inertia\Inertia::render('User/DashboardPage', [
         'routes' => [
             'forms_create' => route('forms.create'),
@@ -42,6 +54,7 @@ Route::get('/', function (Illuminate\Http\Request $request) {
             'create_form' => $request->user()->id === 1,
         ],
         'forms' => $forms,
+        'invitations' => $invitations,
     ]);
 })->middleware(['auth'])->name('home');
 
@@ -149,7 +162,7 @@ Route::get('/forms/create', function (Illuminate\Http\Request $request) {
 })->middleware(['auth'])->name('forms.create');
 
 Route::get('/f/{form}', function (App\Models\Form $form, Illuminate\Http\Request $request) {
-    if (collect($form->config['invitees'])->doesntContain($request->user()->org_id)) {
+    if (collect($form->config['invitees'])->doesntContain($request->user()->org_id) && $request->user()->id !== $form->creator_id) {
         return redirect()->route('forms.uninvited', $form->hashed_key);
     }
 
