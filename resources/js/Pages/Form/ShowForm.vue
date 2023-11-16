@@ -58,7 +58,7 @@ const form = useForm({...preForm});
 
 const invalidForm = computed(() => {
     let qq = props.questions.map(q => q.title);
-    qq.push('division');
+    // qq.push('division');
     qq.push('confirmed');
 
     // required all fields
@@ -67,15 +67,17 @@ const invalidForm = computed(() => {
         invalid = invalid || !form[qq[key]];
     }
 
-    if (invalid) {
+    return invalid;
+
+    // check unique
+    /*if (invalid) {
         return invalid;
     }
 
-    // check unique
     let ans = props.questions.map(q => form[q.title]);
     let unique = [...new Set(ans)];
 
-    return unique.length !== ans.length;
+    return unique.length !== ans.length;*/
 });
 
 const {resolveControlComponent} = useResolveControlComponent();
