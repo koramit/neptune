@@ -37,6 +37,7 @@ Route::get('/', function (Illuminate\Http\Request $request) {
         ->select(['id', 'title', 'config'])
         ->get()
         ->filter(fn ($f) => collect($f->config['invitees'])->contains($request->user()->org_id))
+        ->values()
         ->transform(fn ($f) => [
             'title' => $f->title,
             'hashedKey' => $f->hashed_key,
