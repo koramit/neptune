@@ -13,7 +13,7 @@ class ImportDivision extends Command
      *
      * @var string
      */
-    protected $signature = 'import:division {path}';
+    protected $signature = 'import:division';
 
     /**
      * The console command description.
@@ -30,7 +30,7 @@ class ImportDivision extends Command
      */
     public function handle()
     {
-        $path = storage_path('app/uploads/excel/' . $this->argument('path'));
+        $path = storage_path('app/uploads/excel/divisions.xlsx');
 
         (new ImportDivisionAction())($path);
 
