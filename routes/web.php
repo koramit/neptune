@@ -4,8 +4,6 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
-\Auth::loginUsingId(1);
-
 Route::get('/', function (Illuminate\Http\Request $request) {
     $forms = App\Models\Form::query()
         ->where('creator_id', $request->user()->id)
