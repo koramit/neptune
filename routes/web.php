@@ -4,17 +4,6 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::get('/', function (Illuminate\Http\Request $request) {
     $forms = App\Models\Form::query()
         ->where('creator_id', $request->user()->id)
@@ -375,12 +364,12 @@ Route::get('/responses/{form}/export', function (App\Models\Form $form, Illumina
     return (new \Rap2hpoutre\FastExcel\FastExcel($shuffledData))->download('คำตอบแบบสอบถาม.xlsx');
 })->middleware(['auth'])->name('responses.export');
 
-Route::get('/คนดี-รอบ-1', function () {
+Route::get('/คนดี-66-รอบ-1', function () {
     session()->flash('page-title', 'คนดีฯ รอบ 1');
     $forms = App\Models\Form::query()
         ->withCount('responses')
-        // ->whereBetween('id', [2, 19])
-        ->whereNotIn('id', [1, 5, 7, 12, 16, 19, 20, 21, 22, 23])
+        ->where('title', 'like', '%คนดี%66%รอบ%1')
+        ->where('title', 'not like', '%template%')
         ->get()
         ->transform(fn ($f) => [
             'title' => $f->title,
