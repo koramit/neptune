@@ -4,9 +4,12 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
+\Auth::loginUsingId(1);
+
 Route::get('/', function (Illuminate\Http\Request $request) {
     $forms = App\Models\Form::query()
         ->where('creator_id', $request->user()->id)
+        ->withCount('responses')
         ->get()
         ->transform(fn ($f) => [
             'title' => $f->title,
@@ -18,6 +21,8 @@ Route::get('/', function (Illuminate\Http\Request $request) {
                 'participants_export' => route('participants.export', $f->hashed_key),
                 'responses_export' => route('responses.export', $f->hashed_key),
             ],
+            'responses' => $f->responses_count,
+            'invitees' => count($f->config['invitees'] ?? []),
         ]);
 
     session()->flash('page-title', 'ฟอร์ม');

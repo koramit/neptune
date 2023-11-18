@@ -17,37 +17,39 @@
         <div
             v-for="form in forms"
             :key="form.hashed_key"
-            class="space-x-3"
         >
-            <span>{{ form.title }}</span>
-            <Link
-                :href="form.routes.edit"
-                class="text-sky-600"
-            >
-                แก้ไข
-            </Link>
-            <Link
-                :href="form.routes.show"
-                class="text-sky-600"
-            >
-                แสดง
-            </Link>
-            <Link
-                :href="form.routes.duplicate"
-                as="button"
-                method="post"
-                class="text-sky-600"
-            >
-                ทำซ้ำ
-            </Link>
-            <a
-                class="text-sky-600 cursor-pointer"
-                :href="form.routes.responses_export"
-            >Excel-คำตอบ</a>
-            <a
-                class="text-sky-600 cursor-pointer"
-                :href="form.routes.participants_export"
-            >Excel-ผู้ตอบ</a>
+            <label>{{ form.title }}</label>
+            <div class="space-x-3">
+                <Link
+                    :href="form.routes.edit"
+                    class="text-sky-600"
+                >
+                    แก้ไข
+                </Link>
+                <Link
+                    :href="form.routes.show"
+                    class="text-sky-600"
+                >
+                    แสดง
+                </Link>
+                <Link
+                    :href="form.routes.duplicate"
+                    as="button"
+                    method="post"
+                    class="text-sky-600"
+                >
+                    ทำซ้ำ
+                </Link>
+                <a
+                    class="text-sky-600 cursor-pointer"
+                    :href="form.routes.responses_export"
+                >Excel-คำตอบ</a>
+                <a
+                    class="text-sky-600 cursor-pointer"
+                    :href="form.routes.participants_export"
+                >Excel-ผู้ตอบ</a>
+                <span>เชิญ {{ form.invitees }} ท่าน ตอบแล้ว {{ form.responses }}</span>
+            </div>
         </div>
     </div>
     <div class="mt-8 space-y-4">
