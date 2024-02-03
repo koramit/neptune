@@ -5,9 +5,9 @@
             :key="key"
             :is="resolveControlComponent(question.type)"
             v-model="form[question.title]"
-            v-bind="question.props"
+            v-bind="{...question.props, required: true}"
         />
-<!--        <FormInput
+        <!-- <FormInput
             name="division"
             v-model="form.division"
             label="หน่วยงานของผู้ตอบ"
@@ -27,7 +27,7 @@
             >
                 ส่งคำตอบ
             </button>
-<!--            <small
+            <!-- <small
                 v-if="invalidForm"
                 class="mt-4 block italic text-sx"
             >* หากเลือกคำตอบซ้ำจะไม่สามารถส่งคำตอบได้</small>-->
@@ -53,7 +53,9 @@ let preForm = {
     division: props.division,
     confirmed: false,
 };
-props.questions.forEach(q => preForm[q.title] = null);
+props.questions.forEach(q => {
+    preForm[q.title] = q.type === 'FormInput' ? 'ไม่มี' : null;
+});
 const form = useForm({...preForm});
 
 const invalidForm = computed(() => {

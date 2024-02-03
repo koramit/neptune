@@ -27,6 +27,7 @@ Route::get('/', function (Illuminate\Http\Request $request) {
 
     $invitations = App\Models\Form::query()
         ->select(['id', 'title', 'config'])
+        ->withCount(['userResponses' => fn ($q) => $q->where('user_id', $request->user()->id)])
         ->get()
         ->filter(fn ($f) => collect($f->config['invitees'])->contains($request->user()->org_id))
         ->values()
@@ -36,15 +37,16 @@ Route::get('/', function (Illuminate\Http\Request $request) {
             'routes' => [
                 'show' => route('forms.show', $f->hashed_key),
             ],
+            'responses' => $f->user_responses_count,
         ]);
 
     return \Inertia\Inertia::render('User/DashboardPage', [
         'routes' => [
             'forms_create' => route('forms.create'),
-            'fix_form' => route('forms.show', env('FIX_FORM_HASHED_KEY', 'ab')),
+            /*'fix_form' => route('forms.show', env('FIX_FORM_HASHED_KEY', 'ab')),*/
         ],
         'can' => [
-            'create_form' => $request->user()->id === 1,
+            'create_form' => in_array($request->user()->login, explode('|', config('app.CREATORS'))),
         ],
         'forms' => $forms,
         'invitations' => $invitations,
@@ -142,10 +144,11 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/forms/create', function (Illuminate\Http\Request $request) {
-    // if user id !== 1 then abort 403
-    if ($request->user()->id !== 1) {
+    if (! in_array($request->user()->login, explode('|', config('app.CREATORS')))){
         abort(403);
     }
+
+    $request->session()->flash('page-title', 'สร้างฟอร์มใหม่');
 
     return \Inertia\Inertia::render('Form/CreateForm', [
         'routes' => [
@@ -231,6 +234,8 @@ Route::get('/forms/{form}/edit', function (App\Models\Form $form, Illuminate\Htt
     }
 
     $formData['questions'] = $questions;*/
+
+    $request->session()->flash('page-title', 'แก้ไขฟอร์ม');
 
     return \Inertia\Inertia::render('Form/EditForm', [
         'formData' => $formData,

@@ -77,6 +77,7 @@ const questionTypes = [
     'FormSelect',
     'FormRadioGroupCard',
     'FormAutocomplete',
+    'FormInput',
 ];
 
 const {resolveCreatorComponent} = useResolveCreatorComponent();

@@ -25,6 +25,12 @@ class Form extends Model
         return $this->hasMany(FormResponse::class);
     }
 
+    // has many user responses
+    public function userResponses(): HasMany
+    {
+        return $this->hasMany(UserResponse::class);
+    }
+
     public function invitedParticipants(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'form_user', 'form_id', 'user_id');
@@ -36,7 +42,7 @@ class Form extends Model
             get: function () {
                 return $this->questions->map(function ($q) {
                     $props = match ($q['type']) {
-                        'FormSelect', 'FormRadioGroupCard', 'FormAutocomplete' => [
+                        'FormSelect', 'FormRadioGroupCard', 'FormAutocomplete', 'FormInput' => [
                             'name' => $q['title'],
                             'label' => $q['title'],
                             'options' => $q['choices'],
