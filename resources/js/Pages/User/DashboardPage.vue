@@ -2,15 +2,11 @@
     <Link
         :href="routes.forms_create"
         v-if="can.create_form"
+        class="text-sky-600 underline"
     >
         สร้างฟอร์ม
     </Link>
-<!--    <Link
-        :href="routes.fix_form"
-        class="text-sky-600"
-    >
-        เสนอชื่อบุคลากรสายสนับสนุนเพื่อเป็นตัวแทนของกลุ่มบุคลากรสายสนับสนุนวาระ ปี 2566
-    </Link>-->
+
     <div
         class="mt-8 space-y-4"
     >
@@ -61,9 +57,15 @@
             <Link
                 :href="form.routes.show"
                 class="text-sky-600"
+                v-if="form.responses === 0"
             >
                 <span>{{ form.title }}</span>
             </Link>
+            <p
+                v-else
+            >
+                {{ form.title }} (ตอบแล้ว)
+            </p>
         </div>
     </div>
 </template>

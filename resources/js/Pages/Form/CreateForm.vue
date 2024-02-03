@@ -34,6 +34,11 @@
                 v-model:choices="question.choices"
                 v-if="question.type === 'FormAutocomplete'"
             />
+
+            <FormInputCreator
+                v-model:title="question.title"
+                v-if="question.type === 'FormInput'"
+            />
         </div>
         <FormRadio
             name="type"
@@ -63,6 +68,7 @@ import FormTextarea from '../../Components/Controls/FormTextarea.vue';
 import FormSelectCreator from '../../Components/Controls/FormSelectCreator.vue';
 import FormAutocompleteCreator from '../../Components/Controls/FormAutocompleteCreator.vue';
 import FormInput from '../../Components/Controls/FormInput.vue';
+import FormInputCreator from '../../Components/Controls/FormInputCreator.vue';
 
 defineProps({
     routes: {type: Object, required: true},
@@ -87,6 +93,7 @@ const questionTypes = [
     'FormSelect',
     'FormRadioGroupCard',
     'FormAutocomplete',
+    'FormInput',
 ];
 </script>
 

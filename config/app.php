@@ -216,4 +216,6 @@ return [
     'AUTH_USER_APP' => env('AUTH_USER_APP'),
     'AUTH_USER_TOKEN' => env('AUTH_USER_TOKEN'),
     'USER_RESET_PASSWORD_URL' => env('USER_RESET_PASSWORD_URL'),
+
+    'CREATORS' => env('CREATORS'),
 ];
